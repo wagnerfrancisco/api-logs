@@ -21,6 +21,6 @@ Returns logs that match with the specified criteria.
 * page: The page number. Zero based.
 * per_page: The amount of entries per page. 
 * sort: The field to use for sorting. 1 == ascending and -1 == descending
-* field: any of the text fields ("client", "connection", "user", "ip") or "all". If value is "all" we'll do a fuzzy search on all the specified text fields. Otherwise will do a exact search on the specified field.
+* field: any of the text fields ("client", "connection", "user", "ip") or "all". If value is "all" we'll do a fuzzy search on all the specified text fields. Otherwise will do a exact search on the specified field. You can add multiple fields.
 * from: a date lower limit to fetch results
 * to: a date upper limit to fetch results
