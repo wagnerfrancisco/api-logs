@@ -1,8 +1,19 @@
 'use strict';
 
 const express = require('express'),
-      logsCtrl = require('./logs-ctrl')(),
-      router = express.Router();
+      router = express.Router(),
+
+      logsCtrl = (function() {
+          const es = require('elasticsearch');
+
+          const client = es.Client({
+              host: 'localhost:9200'
+          });
+
+          return require('./logs-ctrl')({
+              esClient: client
+          });
+      }());
 
 router.get('/:id', logsCtrl.getId);
 

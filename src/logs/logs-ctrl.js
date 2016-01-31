@@ -1,26 +1,21 @@
 'use strict';
 
 const logsCtrl = function(spec) {
+    const esClient = spec.esClient;
+
     const getId = function(req, res, next) {
-              res.json({
-                  "date": "2016-01-30T21:41:10.163Z",
-                  "type": "ss",
-                  "description": "",
-                  "connection": "Username-Password-Authentication",
-                  "client_id": "YeWtPr2uLVG1KRXO92XJMIg0OgdvPza3",
-                  "client_name": "All Applications",
-                  "ip": "127.0.0.1",
-                  "user_agent": "unknown",
-                  "details": {
-                      "foo": "bar"
-                  },
-                  "user_id": "auth0|1",
-                  "user_name": "user@email.com",
-                  "strategy": "auth0",
-                  "strategy_type": "database",
-                  "_id": "1"
-              });
-          };
+        const id = req.params.id;
+
+        esClient.get({
+            index: 'api',
+            type: 'logs',
+            id: id
+        }).then(function(result) {
+            const content = result._source;
+            content._id = result._id;
+            res.json(result._source);
+        });
+    };
 
     return Object.freeze({
         getId
