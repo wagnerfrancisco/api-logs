@@ -6,6 +6,9 @@ An API to fetch logs stored in ElasticSearch. Available endpoints:
 
 Returns the log with the specified id.
 
+```GET /api/users/:user_id/logs```
+
+Returns the logs of the specified user.
 
 ```GET /api/logs?search={criteria}&page={page}&per_page={per_page}&sort={sort}```
 
