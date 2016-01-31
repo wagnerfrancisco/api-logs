@@ -1,7 +1,7 @@
 'use strict';
 
-const express = require('express'),
-      app = express();
+const express = require('express');
+const app = express();
 
 app.use('/api/logs', require('./logs/setup'));
 

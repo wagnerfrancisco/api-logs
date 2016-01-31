@@ -1,10 +1,10 @@
 'use strict';
 
-const request = require('supertest'),
-      es = require('elasticsearch'),
-      fs = require('fs'),
-      _ = require('lodash'),
-      app = require('src/main');
+const request = require('supertest');
+const es = require('elasticsearch');
+const fs = require('fs');
+const _ = require('lodash');
+const app = require('src/main');
 
 describe('/api/logs', function() {
     let content;
