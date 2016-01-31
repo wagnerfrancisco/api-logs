@@ -22,4 +22,4 @@ Criteria is a JSON object with the following structure:
 }
 ```
 
-text_field can be "client", "connection", "user", "ip" or "full". Multiple entries of text_field can be done if you wish to fetch more than one field. The "full" option makes the search on all fields, so any other text_field entry specified will be ignored.
+text_field can be "client", "connection", "user", "ip" or "full". Multiple entries of text_field can be added if you wish to search on more than one field. The "full" option makes the search on all fields, so any other text_field entry specified will be ignored.
