@@ -7,14 +7,13 @@ An API to fetch logs stored in ElasticSearch. Available endpoints:
 Returns the log with the specified id.
 
 
-```GET /api/logs?search={criteria}&from={from}&size={size}&sort={sort_fields}```
+```GET /api/logs?search={criteria}&page={page}&per_page={per_page}&sort={sort}```
 
 Returns logs that match with the specified criteria.
 
-* from: offset from the first result
-* size: number of results to fetch
-* sort: comma separated list of fields to sort
-* sort_mode: asc or desc
+* page: The page number. Zero based.
+* per_page: The amount of entries per page. 
+* sort: The field to use for sorting. 1 == ascending and -1 == descending
 * criteria: JSON object with the following structure:
 ```
 {
