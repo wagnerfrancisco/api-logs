@@ -6,7 +6,7 @@ const _ = require('lodash');
 const data = require('./data');
 const app = require('src/main');
 
-describe('/api/logs', function() {
+describe('/api', function() {
     const expectations = data.expectations;
 
     before(function(done) {
@@ -30,6 +30,19 @@ describe('/api/logs', function() {
                     .expect(200, expectation, done);
             });
         });
+    });
+
+    it('GET /api/users/:user_id/logs', function(done) {
+        const userId = 'auth0|1';
+
+        const expected = expectations.filter(function(log) {
+            return log.user_id === userId;
+        });
+
+        request(app)
+            .get('/api/users/auth0|1/logs')
+//            .expect('Content-Type', /json/)
+            .expect(200, expected, done);
     });
 
     /*
