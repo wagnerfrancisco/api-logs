@@ -27,8 +27,27 @@ const logs = function(spec) {
         })).then(prepareResult);
     };
 
+    const byUser = function(userId) {
+        return client.search(options({
+            body: {
+                query: {
+                    bool: {
+                        filter: [{
+                            term: {
+                                user_id: userId
+                            }
+                        }]
+                    }
+                }
+            }
+        })).then(function(result) {
+            return result.hits.hits.map(prepareResult);
+        });
+    };
+
     return Object.freeze({
-        byId
+        byId,
+        byUser
     });
 };
 

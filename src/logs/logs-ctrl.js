@@ -13,8 +13,19 @@ const logsCtrl = function(spec) {
             .catch(next);
     };
 
+    const byUser = function(req, res, next) {
+        const userId = req.params.userId;
+
+        logs.byUser(userId)
+            .then(function(result) {
+                res.json(result);
+            })
+            .catch(next);
+    };
+
     return Object.freeze({
-        byId
+        byId,
+        byUser
     });
 };
 
