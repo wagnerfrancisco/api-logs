@@ -24,3 +24,11 @@ Returns logs that match with the specified criteria.
 * field: any of the text fields ("client", "connection", "user", "ip") or "all". If value is "all" we'll do a fuzzy search on all the specified text fields. Otherwise will do a exact search on the specified field. You can add multiple fields.
 * from: a date lower limit to fetch results
 * to: a date upper limit to fetch results
+
+##### How to Run
+
+* Clone the repo
+* npm install
+* ensure you have Elastic Search running on port 9200
+* npm test
+* npm start
