@@ -4,12 +4,14 @@
   "description": "",
   "main": "src/main.js",
   "scripts": {
+    "start": "node src/main.js",
     "test": "mocha test/**/*.test.js"
   },
   "author": "Wagner Francisco Mezaroba <wagnerfrancisco@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "mocha": "^2.4.5",
+    "sinon": "^1.17.3",
     "supertest": "^1.1.0"
   },
   "dependencies": {

@@ -6,15 +6,19 @@ const router = express.Router();
 const logsCtrl = (function() {
     const es = require('elasticsearch');
 
-    const client = es.Client({
+    const esClient = es.Client({
         host: 'localhost:9200'
     });
 
+    const logs = require('./logs')({
+        esClient
+    });
+
     return require('./logs-ctrl')({
-        esClient: client
+        logs
     });
 }());
 
-router.get('/:id', logsCtrl.getId);
+router.get('/:id', logsCtrl.byId);
 
 module.exports = router;

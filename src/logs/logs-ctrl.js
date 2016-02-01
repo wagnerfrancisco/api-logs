@@ -1,24 +1,20 @@
 'use strict';
 
 const logsCtrl = function(spec) {
-    const esClient = spec.esClient;
+    const logs = spec.logs;
 
-    const getId = function(req, res, next) {
+    const byId = function(req, res, next) {
         const id = req.params.id;
 
-        esClient.get({
-            index: 'api',
-            type: 'logs',
-            id: id
-        }).then(function(result) {
-            const content = result._source;
-            content._id = result._id;
-            res.json(result._source);
-        });
+        logs.byId(id)
+            .then(function(result) {
+                res.json(result);
+            })
+            .catch(next);
     };
 
     return Object.freeze({
-        getId
+        byId
     });
 };
 

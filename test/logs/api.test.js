@@ -2,32 +2,34 @@
 
 const request = require('supertest');
 const es = require('elasticsearch');
-const fs = require('fs');
 const _ = require('lodash');
+const data = require('./data');
 const app = require('src/main');
 
 describe('/api/logs', function() {
-    let content;
+    const expectations = data.expectations;
 
     before(function(done) {
         const client = new es.Client({
             host: 'localhost:9200'
         });
 
-        content = JSON.parse(fs.readFileSync('./test/logs/data.json'));
-
         client.bulk({
-            body: bulkIndex(content)
+            body: bulkIndex(data.elasticSearch)
         }).then(function() {
             done();
         });
     });
 
-    it('GET {_id}', function(done) {
-        request(app)
-            .get('/api/logs/1')
-            .expect('Content-Type', /json/)
-            .expect(200, content[0], done);
+    describe('GET /api/logs/:id', function() {
+        expectations.forEach(function(expectation, index) {
+            it(`id: ${index}`, function(done) {
+                request(app)
+                    .get(`/api/logs/${index}`)
+                    .expect('Content-Type', /json/)
+                    .expect(200, expectation, done);
+            });
+        });
     });
 
     /*
@@ -36,13 +38,13 @@ describe('/api/logs', function() {
      * for bulk API
      */
     function bulkIndex(content) {
-        const prepare = function(entry) {
+        const prepare = function(entry, index) {
             const obj = _.omit(entry, '_id');
             const action = {
                  index: {
                      _index: 'api',
                      _type: 'logs',
-                     _id: entry._id
+                     _id: index
                  }
              };
 
