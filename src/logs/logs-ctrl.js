@@ -23,9 +23,20 @@ const logsCtrl = function(spec) {
             .catch(next);
     };
 
+    const byCriteria = function(req, res, next) {
+        const criteria = req.criteria;
+
+        logs.byCriteria(criteria)
+            .then(function(result) {
+                res.json(result);
+            })
+            .catch(next);
+    };
+
     return Object.freeze({
         byId,
-        byUser
+        byUser,
+        byCriteria
     });
 };
 

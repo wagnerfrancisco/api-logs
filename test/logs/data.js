@@ -2,22 +2,40 @@
 
 const elasticSearch = Object.freeze([
     {
-        date: '2016-01-30T21:41:10.163Z',
+        date: '2015-09-30T21:41:10.163Z',
         connection: 'Username-Password-Authentication',
-        client_name: 'All Applications',
-        ip: '127.0.0.1',
+        client_name: 'app1',
+        ip: '1.1.1.1',
         user_id: 'auth0|1',
         user_name: 'user1@email.com',
         tenant: 'foo'
     },
     {
-        date: '2016-01-30T21:41:10.163Z',
+        date: '2015-10-30T21:41:10.163Z',
         connection: 'Username-Password-Authentication',
-        client_name: 'All Applications',
-        ip: '127.0.0.1',
+        client_name: 'app1',
+        ip: '1.1.1.3',
         user_id: 'auth0|2',
         user_name: 'user2@email.com',
-        tenant: 'bar'
+        tenant: 'foo'
+    },
+    {
+        date: '2015-11-30T21:41:10.163Z',
+        connection: 'Bluth-Connection',
+        client_name: 'app2',
+        ip: '1.1.1.2',
+        user_id: 'auth0|1',
+        user_name: 'user1@email.com',
+        tenant: 'foo'
+    },
+    {
+        date: '2015-12-30T21:41:10.163Z',
+        connection: 'Username-Password-Authentication',
+        client_name: 'app2',
+        ip: '1.1.1.3',
+        user_id: 'auth0|2',
+        user_name: 'user2@email.com',
+        tenant: 'foo'
     }
 ]);
 
@@ -27,22 +45,40 @@ const elasticSearch = Object.freeze([
  */
 const expectations = Object.freeze([
     {
-        date: '2016-01-30T21:41:10.163Z',
+        date: '2015-09-30T21:41:10.163Z',
         connection: 'Username-Password-Authentication',
-        client_name: 'All Applications',
-        ip: '127.0.0.1',
+        client_name: 'app1',
+        ip: '1.1.1.1',
         user_id: 'auth0|1',
         user_name: 'user1@email.com',
         _id: 0
     },
     {
-        date: '2016-01-30T21:41:10.163Z',
+        date: '2015-10-30T21:41:10.163Z',
         connection: 'Username-Password-Authentication',
-        client_name: 'All Applications',
-        ip: '127.0.0.1',
+        client_name: 'app1',
+        ip: '1.1.1.3',
         user_id: 'auth0|2',
         user_name: 'user2@email.com',
         _id: 1
+    },
+    {
+        date: '2015-11-30T21:41:10.163Z',
+        connection: 'Bluth-Connection',
+        client_name: 'app2',
+        ip: '1.1.1.2',
+        user_id: 'auth0|1',
+        user_name: 'user1@email.com',
+        _id: 2
+    },
+    {
+        date: '2015-12-30T21:41:10.163Z',
+        connection: 'Username-Password-Authentication',
+        client_name: 'app2',
+        ip: '1.1.1.3',
+        user_id: 'auth0|2',
+        user_name: 'user2@email.com',
+        _id: 3
     }
 ]);
 

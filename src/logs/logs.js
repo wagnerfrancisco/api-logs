@@ -45,9 +45,18 @@ const logs = function(spec) {
         });
     };
 
+    const byCriteria = function(criteria) {
+        return client.search(options({
+            body: criteria.toEsQuery()
+        })).then(function(result) {
+            return result.hits.hits.map(prepareResult);
+        });
+    };
+
     return Object.freeze({
         byId,
-        byUser
+        byUser,
+        byCriteria
     });
 };
 

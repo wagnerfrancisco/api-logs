@@ -45,6 +45,92 @@ describe('/api', function() {
             .expect(200, expected, done);
     });
 
+    describe('GET /api/logs', function() {
+        it('by ip', function(done) {
+            const ip = '1.1.1.3';
+            const url = `/api/logs?ip=${ip}`;
+
+            const expected = expectations.filter(function(log) {
+                return log.ip === ip;
+            });
+
+            request(app)
+                .get(url)
+                .expect('Content-Type', /json/)
+                .expect(200, expected, done);
+        });
+
+        it('by connection', function(done) {
+            const connection = 'Username-Password-Authentication';
+            const url = `/api/logs?connection=${connection}`;
+
+            const expected = expectations.filter(function(log) {
+                return log.connection === connection;
+            });
+
+            request(app)
+                .get(url)
+                .expect('Content-Type', /json/)
+                .expect(200, expected, done);
+        });
+
+        it('by user_name', function(done) {
+            const userName = 'user1@email.com';
+            const url = `/api/logs?user_name=${userName}`;
+
+            const expected = expectations.filter(function(log) {
+                return log.user_name === userName;
+            });
+
+            request(app)
+                .get(url)
+                .expect('Content-Type', /json/)
+                .expect(200, expected, done);
+        });
+
+        it('by client', function(done) {
+            const clientName = 'app1';
+            const url = `/api/logs?client_name=${clientName}`;
+
+            const expected = expectations.filter(function(log) {
+                return log.client_name === clientName;
+            });
+
+            request(app)
+                .get(url)
+                .expect('Content-Type', /json/)
+                .expect(200, expected, done);
+        });
+
+        it('by date', function(done) {
+            const from = '2015-10-30T21:41:10.163Z';
+            const to = '2015-11-30T21:41:10.163Z';
+            const url = `/api/logs?date_from=${from}&date_to=${to}`;
+
+            const expected = expectations.slice(1, 3).reverse();
+
+            request(app)
+                .get(url)
+                .expect('Content-Type', /json/)
+                .expect(200, expected, done);
+        });
+
+        it('fuzzy', function(done) {
+            const term = 'sername-Password-Authentication';
+            const connection = 'Username-Password-Authentication';
+            const url = `/api/logs?all=${term}`;
+
+            const expected = expectations.filter(function(log) {
+                return log.connection === connection;
+            });
+
+            request(app)
+                .get(url)
+                .expect('Content-Type', /json/)
+                .expect(200, expected, done);
+        });
+    });
+
     function prepareES() {
         const index = 'api';
 
