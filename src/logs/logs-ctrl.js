@@ -4,19 +4,23 @@ const logsCtrl = function(spec) {
     const logs = spec.logs;
 
     const byId = function(req, res, next) {
-        const id = req.params.id;
+        const criteria = req.criteria;
 
-        logs.byId(id)
+        criteria.addId(req.params.id);
+
+        logs.byCriteria(criteria)
             .then(function(result) {
-                res.json(result);
+                res.json(result[0] || {});
             })
             .catch(next);
     };
 
     const byUser = function(req, res, next) {
-        const userId = req.params.userId;
+        const criteria = req.criteria;
 
-        logs.byUser(userId)
+        criteria.addUser(req.params.userId);
+
+        logs.byCriteria(criteria)
             .then(function(result) {
                 res.json(result);
             })
@@ -25,6 +29,8 @@ const logsCtrl = function(spec) {
 
     const byCriteria = function(req, res, next) {
         const criteria = req.criteria;
+
+        criteria.addUrlQuery(req.query);
 
         logs.byCriteria(criteria)
             .then(function(result) {

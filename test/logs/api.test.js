@@ -10,6 +10,9 @@ const app = require('src/main');
 describe('/api', function() {
     const expectations = data.expectations;
 
+    const fooToken = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IldhZ25lciIsImFkbWluIjp0cnVlLCJ0ZW5hbnQiOiJmb28ifQ.bW3-0oHmg6skos-URcftzehy1sfwybtujBEH_3oQnOU';
+    const barToken = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IldhZ25lciIsImFkbWluIjp0cnVlLCJ0ZW5hbnQiOiJiYXIifQ.dZdX4A2ZKmHlouAX53MFEL9rXvYqF3V4xcm5bvTRUJY';
+
     before(function(done) {
         prepareES()
             .then(function() {
@@ -26,9 +29,18 @@ describe('/api', function() {
             it(`id: ${index}`, function(done) {
                 request(app)
                     .get(`/api/logs/${index}`)
+                    .set('Authorization', fooToken)
                     .expect('Content-Type', /json/)
                     .expect(200, expectation, done);
             });
+        });
+
+        it('should respect tenant', function(done) {
+            request(app)
+                .get(`/api/logs/0`)
+                .set('Authorization', barToken)
+                .expect('Content-Type', /json/)
+                .expect(200, {}, done);
         });
     });
 
@@ -41,6 +53,7 @@ describe('/api', function() {
 
         request(app)
             .get(`/api/users/${userId}/logs`)
+            .set('Authorization', fooToken)
             .expect('Content-Type', /json/)
             .expect(200, expected, done);
     });
@@ -56,6 +69,7 @@ describe('/api', function() {
 
             request(app)
                 .get(url)
+                .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
                 .expect(200, expected, done);
         });
@@ -70,6 +84,7 @@ describe('/api', function() {
 
             request(app)
                 .get(url)
+                .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
                 .expect(200, expected, done);
         });
@@ -84,6 +99,7 @@ describe('/api', function() {
 
             request(app)
                 .get(url)
+                .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
                 .expect(200, expected, done);
         });
@@ -98,6 +114,7 @@ describe('/api', function() {
 
             request(app)
                 .get(url)
+                .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
                 .expect(200, expected, done);
         });
@@ -107,15 +124,16 @@ describe('/api', function() {
             const to = '2015-11-30T21:41:10.163Z';
             const url = `/api/logs?date_from=${from}&date_to=${to}`;
 
-            const expected = expectations.slice(1, 3).reverse();
+            const expected = expectations.slice(1, 3);
 
             request(app)
                 .get(url)
+                .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
                 .expect(200, expected, done);
         });
 
-        it('fuzzy', function(done) {
+        it('by all fields', function(done) {
             const term = 'sername-Password-Authentication';
             const connection = 'Username-Password-Authentication';
             const url = `/api/logs?all=${term}`;
@@ -126,6 +144,50 @@ describe('/api', function() {
 
             request(app)
                 .get(url)
+                .set('Authorization', fooToken)
+                .expect('Content-Type', /json/)
+                .expect(200, expected, done);
+        });
+
+        it('no filter', function(done) {
+            const url = '/api/logs';
+
+            request(app)
+                .get(url)
+                .set('Authorization', fooToken)
+                .expect('Content-Type', /json/)
+                .expect(200, expectations, done);
+        });
+
+        it('sort by user_name', function(done) {
+            const url = '/api/logs?sort=user_name,connection';
+            const expected = _.sortBy(expectations, ['user_name', 'connection']);
+
+            request(app)
+                .get(url)
+                .set('Authorization', fooToken)
+                .expect('Content-Type', /json/)
+                .expect(200, expected, done);
+        });
+
+        it('limits result per page / page 0', function(done) {
+            const url = `/api/logs?per_page=2`;
+            const expected = expectations.slice(0, 2);
+
+            request(app)
+                .get(url)
+                .set('Authorization', fooToken)
+                .expect('Content-Type', /json/)
+                .expect(200, expected, done);
+        });
+
+        it('limits result per page / page 1', function(done) {
+            const url = `/api/logs?per_page=2&page=1`;
+            const expected = expectations.slice(2, 4);
+
+            request(app)
+                .get(url)
+                .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
                 .expect(200, expected, done);
         });

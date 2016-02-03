@@ -21,30 +21,6 @@ const logs = function(spec) {
         return obj;
     };
 
-    const byId = function(id) {
-        return client.get(options({
-            id: id
-        })).then(prepareResult);
-    };
-
-    const byUser = function(userId) {
-        return client.search(options({
-            body: {
-                query: {
-                    bool: {
-                        filter: [{
-                            term: {
-                                user_id: userId
-                            }
-                        }]
-                    }
-                }
-            }
-        })).then(function(result) {
-            return result.hits.hits.map(prepareResult);
-        });
-    };
-
     const byCriteria = function(criteria) {
         return client.search(options({
             body: criteria.toEsQuery()
@@ -54,8 +30,6 @@ const logs = function(spec) {
     };
 
     return Object.freeze({
-        byId,
-        byUser,
         byCriteria
     });
 };

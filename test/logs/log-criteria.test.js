@@ -4,20 +4,77 @@ const assert = require('assert');
 const logCriteria = require('src/logs/log-criteria');
 
 describe('log-criteria', function() {
-    it('should return as es query', function() {
-        const req = {
+    it('should add tenant', function() {
+        const criteria = logCriteria();
+        criteria.addTenant('xyz');
+        assert.deepEqual({
             query: {
-                ip: '127.0.0.1',
-                client_name: 'erp',
-                connection: 'slow',
-                user_name: 'homer',
-                date_from: '2016-02-01T23:40:00',
-                date_to: '2016-03-01T23:40:00',
-                all: 'anything'
+                bool: {
+                    filter: [
+                        {
+                            term: {
+                                tenant: 'xyz'
+                            }
+                        }
+                    ]
+                }
             }
+        }, criteria.toEsQuery());
+    });
+
+    it('should add id', function() {
+        const criteria = logCriteria();
+        criteria.addId('1');
+        assert.deepEqual({
+            query: {
+                bool: {
+                    filter: [
+                        {
+                            ids: {
+                                type: 'logs',
+                                values: ['1']
+                            }
+                        }
+                    ]
+                }
+            }
+        }, criteria.toEsQuery());
+    });
+
+    it('should add user', function() {
+        const criteria = logCriteria();
+        criteria.addUser('user01');
+        assert.deepEqual({
+            query: {
+                bool: {
+                    filter: [
+                        {
+                            term: {
+                                user_id: 'user01'
+                            }
+                        }
+                    ]
+                }
+            }
+        }, criteria.toEsQuery());
+    });
+
+    it('should add url query params', function() {
+        const query = {
+            ip: '127.0.0.1',
+            client_name: 'erp',
+            connection: 'slow',
+            user_name: 'homer',
+            date_from: '2016-02-01T23:40:00',
+            date_to: '2016-03-01T23:40:00',
+            all: 'anything',
+            sort: 'user_name,connection',
+            page: 1,
+            per_page: 10
         };
-        const criteria = logCriteria(req);
-        const query = criteria.toEsQuery();
+        const criteria = logCriteria();
+
+        criteria.addUrlQuery(query);
 
         assert.deepEqual({
             query: {
@@ -29,8 +86,8 @@ describe('log-criteria', function() {
                                 fuzziness: 'auto',
                                 fields: [
                                     'client_name',
-                                    'user_name',
-                                    'connection']
+                                    'connection',
+                                    'user_name']
                             }
                         }
                     ],
@@ -65,7 +122,41 @@ describe('log-criteria', function() {
                         }
                     ]
                 }
-            }
-        }, query);
+            },
+            sort: [
+                {
+                    user_name: {
+                        order: 'asc'
+                    }
+                },
+                {
+                    connection: {
+                        order: 'asc'
+                    }
+                }
+            ],
+            size: 10,
+            from: 10
+        }, criteria.toEsQuery());
+    });
+
+    it('should sort by date if no fuzzy and no sort', function() {
+        const query = {};
+        const criteria = logCriteria();
+
+        criteria.addUrlQuery(query);
+
+        assert.deepEqual({
+            query: {
+                bool: {
+                    filter: []
+                }
+            },
+            sort: [{
+                    date: {
+                        order: 'asc'
+                    }
+                }]
+        }, criteria.toEsQuery());
     });
 });

@@ -2,105 +2,137 @@
 
 const _ = require('lodash');
 
-/*
- * Reads query params and transforms
- * them into an ES query
- */
-const logCriteria = function(req) {
-    const query = _.clone(req.query);
+const strFields = [
+    'client_name',
+    'connection',
+    'user_name'
+];
 
-    const filterFields = {
-        ip: 'ip',
-        client_name: 'string',
-        connection: 'string',
-        user_name: 'string',
-        date: 'date'
+const logCriteria = function() {
+
+    const result = {
+        query: {
+            bool: {
+                filter: [
+                ]
+            }
+        }
     };
 
-    const multiMatchFields = [
-        'client_name',
-        'user_name',
-        'connection'
-    ];
+    const filters = result.query.bool.filter;
 
-    const filterFn = {
-        ip: function(name, value) {
-            return {
+    const addId = function(id) {
+        filters.push({
+            ids: {
+                type: 'logs',
+                values: [id]
+            }
+        });
+    };
+
+    const addTenant = function(tenant) {
+        filters.push({
+            term: {
+                tenant
+            }
+        });
+    };
+
+    const addUser = function(user) {
+        filters.push({
+            term: {
+                user_id: user
+            }
+        });
+    };
+
+    const addUrlQuery = function(query) {
+        if (query.ip) {
+            filters.push({
                 term: {
-                    [name]: value
+                    ip: query.ip
                 }
-            };
-        },
+            });
+        }
 
-        string: function(name, value) {
-            return {
-                term: {
-                    [name]: value
-                }
-            };
-        },
+        strFields.forEach(function(f) {
+            if (query[f]) {
+                filters.push({
+                    term: {
+                        [f]: query[f]
+                    }
+                });
+            }
+        });
 
-        date: function(name, value) {
-            const result = {
-                range: {
-                    [name]: {}
-                }
+        if (query.date_from || query.date_to) {
+            let range = {
+                date: {}
             };
 
-            if (value.from) {
-                result.range[name].gte = value.from;
+            if (query.date_from) {
+                range.date.gte = query.date_from;
             }
 
-            if (value.to) {
-                result.range[name].lte = value.to;
+            if (query.date_to) {
+                range.date.lte = query.date_to;
             }
 
-            return result;
+            filters.push({
+                range
+            });
+        }
+
+        if (query.all) {
+            result.query.bool.must = [{
+                multi_match: {
+                    query: query.all,
+                    fuzziness: 'auto',
+                    fields: strFields
+                }
+            }];
+        }
+
+        if (query.sort) {
+            let sort = query.sort.split(',').map(function(s) {
+                return {
+                    [s]: {
+                        order: 'asc'
+                    }
+                };
+            });
+
+            result.sort = sort;
+        } else if (!query.all) {
+            /*
+             * Sort by date if no fuzzy match
+             * or sort params
+             */
+            result.sort = [{
+                date: {
+                    order: 'asc'
+                }
+            }];
+        }
+
+        if (isFinite(query.page) || isFinite(query.per_page)) {
+            let size = query.per_page || 10;
+            result.size = size;
+            if (isFinite(query.page)) {
+                result.from = query.page * size;
+            }
         }
     };
 
     const toEsQuery = function() {
-        const filters = Object.keys(filterFields)
-            .filter(function(field) {
-                return query[field];
-            })
-            .map(function(field) {
-                const fn = filterFn[filterFields[field]];
-                return fn(field, query[field]);
-            });
-
-        const must = [];
-
-        if (query.all) {
-            must.push({
-                multi_match: {
-                    query: query.all,
-                    fuzziness: 'auto',
-                    fields: multiMatchFields
-                }
-            });
-        }
-
-        return {
-            query: {
-                bool: {
-                    must: must,
-                    filter: filters
-                }
-            }
-        };
+        return result;
     };
 
-    if (query.date_from || query.date_to) {
-        query.date = {
-            from: query.date_from,
-            to: query.date_to
-        };
-        delete query.date_from;
-        delete query.date_to;
-    }
-
     return Object.freeze({
+        addId,
+        addTenant,
+        addUrlQuery,
+        addUser,
         toEsQuery
     });
 };

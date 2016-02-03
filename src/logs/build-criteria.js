@@ -3,7 +3,11 @@
 const logCriteria = require('./log-criteria');
 
 const buildCriteria = function(req, res, next) {
-    req.criteria = logCriteria(req);
+    const criteria = logCriteria();
+
+    criteria.addTenant(req.tenant);
+    req.criteria = criteria;
+
     next();
 };
 
