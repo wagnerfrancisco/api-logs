@@ -191,6 +191,16 @@ describe('/api', function() {
                 .expect('Content-Type', /json/)
                 .expect(200, expected, done);
         });
+
+        it('respect tenant', function(done) {
+            const url = '/api/logs';
+
+            request(app)
+                .get(url)
+                .set('Authorization', barToken)
+                .expect('Content-Type', /json/)
+                .expect(200, [], done);
+        });
     });
 
     function prepareES() {
