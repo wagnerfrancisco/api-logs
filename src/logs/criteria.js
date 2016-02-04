@@ -8,7 +8,7 @@ const strFields = [
     'user_name'
 ];
 
-const logCriteria = function() {
+const build = function() {
 
     const result = {
         query: {
@@ -137,4 +137,16 @@ const logCriteria = function() {
     });
 };
 
-module.exports = logCriteria;
+const init = function(req, res, next) {
+    const criteria = build();
+
+    criteria.addTenant(req.tenant);
+    req.criteria = criteria;
+
+    next();
+};
+
+module.exports = {
+    init: init,
+    build: build
+};

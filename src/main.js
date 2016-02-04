@@ -4,40 +4,22 @@ const express = require('express');
 const jwt = require('express-jwt');
 
 const appContext = require('./app-context');
-const logsCtrl = appContext.logsCtrl;
 const app = express();
-const buildCriteria = require('./logs/build-criteria');
-
-const secretCallback = (function() {
-    const secrets = {
-        foo: 'barbecue',
-        bar: 'bacon'
-    };
-
-    return function(req, payload, done) {
-        const tenant = payload.tenant;
-        const secret = secrets[tenant];
-
-        if (!secret) {
-            done(new Error('missing_secret'));
-        } else {
-            req.tenant = tenant;
-            done(null, secret);
-        }
-    };
-}());
 
 const logsRouter = (function() {
     const router = express.Router();
-    router.use(buildCriteria);
+    const logsCtrl = appContext.logsCtrl;
+
+    router.use(require('./logs/criteria').init);
     router.get('/api/logs/:id', logsCtrl.byId);
     router.get('/api/logs', logsCtrl.byCriteria);
     router.get('/api/users/:userId/logs', logsCtrl.byUser);
+
     return router;
 }());
 
 app.use(jwt({
-    secret: secretCallback
+    secret: require('./commons/secret-callback')
 }));
 
 app.use(logsRouter);

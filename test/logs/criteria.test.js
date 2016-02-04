@@ -1,11 +1,11 @@
 'use strict';
 
 const assert = require('assert');
-const logCriteria = require('src/logs/log-criteria');
+const build = require('src/logs/criteria').build;
 
-describe('log-criteria', function() {
+describe('criteria', function() {
     it('should add tenant', function() {
-        const criteria = logCriteria();
+        const criteria = build();
         criteria.addTenant('xyz');
         assert.deepEqual({
             query: {
@@ -23,7 +23,7 @@ describe('log-criteria', function() {
     });
 
     it('should add id', function() {
-        const criteria = logCriteria();
+        const criteria = build();
         criteria.addId('1');
         assert.deepEqual({
             query: {
@@ -42,7 +42,7 @@ describe('log-criteria', function() {
     });
 
     it('should add user', function() {
-        const criteria = logCriteria();
+        const criteria = build();
         criteria.addUser('user01');
         assert.deepEqual({
             query: {
@@ -72,7 +72,7 @@ describe('log-criteria', function() {
             page: 1,
             per_page: 10
         };
-        const criteria = logCriteria();
+        const criteria = build();
 
         criteria.addUrlQuery(query);
 
@@ -142,7 +142,7 @@ describe('log-criteria', function() {
 
     it('should sort by date if no fuzzy and no sort', function() {
         const query = {};
-        const criteria = logCriteria();
+        const criteria = build();
 
         criteria.addUrlQuery(query);
 
