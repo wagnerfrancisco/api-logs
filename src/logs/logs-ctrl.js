@@ -23,7 +23,7 @@ const logsCtrl = function(spec) {
 
         logs.byCriteria(criteria)
             .then(function(result) {
-                res.json(result);
+                res.json(prepareResponse(result, criteria));
             })
             .catch(next);
     };
@@ -35,9 +35,17 @@ const logsCtrl = function(spec) {
 
         logs.byCriteria(criteria)
             .then(function(result) {
-                res.json(result);
+                res.json(prepareResponse(result, criteria));
             })
             .catch(next);
+    };
+
+    const prepareResponse = function(result, criteria) {
+        return {
+            total: result.length,
+            limit: criteria.size(),
+            logs: result
+        };
     };
 
     return Object.freeze({

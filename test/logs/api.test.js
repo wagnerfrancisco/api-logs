@@ -55,7 +55,11 @@ describe('/api', function() {
             .get(`/api/users/${userId}/logs`)
             .set('Authorization', fooToken)
             .expect('Content-Type', /json/)
-            .expect(200, expected, done);
+            .expect(200, {
+                total: expected.length,
+                limit: 10,
+                logs: expected
+            }, done);
     });
 
     describe('GET /api/logs', function() {
@@ -71,7 +75,11 @@ describe('/api', function() {
                 .get(url)
                 .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
-                .expect(200, expected, done);
+                .expect(200, {
+                    total: expected.length,
+                    limit: 10,
+                    logs: expected
+                }, done);
         });
 
         it('by connection', function(done) {
@@ -86,7 +94,11 @@ describe('/api', function() {
                 .get(url)
                 .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
-                .expect(200, expected, done);
+                .expect(200, {
+                    total: expected.length,
+                    limit: 10,
+                    logs: expected
+                }, done);
         });
 
         it('by user_name', function(done) {
@@ -101,7 +113,11 @@ describe('/api', function() {
                 .get(url)
                 .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
-                .expect(200, expected, done);
+                .expect(200, {
+                    total: expected.length,
+                    logs: expected,
+                    limit: 10
+                }, done);
         });
 
         it('by client', function(done) {
@@ -116,7 +132,11 @@ describe('/api', function() {
                 .get(url)
                 .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
-                .expect(200, expected, done);
+                .expect(200, {
+                    total: expected.length,
+                    logs: expected,
+                    limit: 10
+                }, done);
         });
 
         it('by date', function(done) {
@@ -130,7 +150,11 @@ describe('/api', function() {
                 .get(url)
                 .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
-                .expect(200, expected, done);
+                .expect(200, {
+                    total: expected.length,
+                    logs: expected,
+                    limit: 10
+                }, done);
         });
 
         it('by all fields', function(done) {
@@ -146,7 +170,11 @@ describe('/api', function() {
                 .get(url)
                 .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
-                .expect(200, expected, done);
+                .expect(200, {
+                    total: expected.length,
+                    logs: expected,
+                    limit: 10
+                }, done);
         });
 
         it('no filter', function(done) {
@@ -156,7 +184,11 @@ describe('/api', function() {
                 .get(url)
                 .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
-                .expect(200, expectations, done);
+                .expect(200, {
+                    total: expectations.length,
+                    logs: expectations,
+                    limit: 10
+                }, done);
         });
 
         it('sort by user_name', function(done) {
@@ -167,7 +199,11 @@ describe('/api', function() {
                 .get(url)
                 .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
-                .expect(200, expected, done);
+                .expect(200, {
+                    total: expected.length,
+                    logs: expected,
+                    limit: 10
+                }, done);
         });
 
         it('limits result per page / page 0', function(done) {
@@ -178,7 +214,11 @@ describe('/api', function() {
                 .get(url)
                 .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
-                .expect(200, expected, done);
+                .expect(200, {
+                    total: expected.length,
+                    logs: expected,
+                    limit: 2
+                }, done);
         });
 
         it('limits result per page / page 1', function(done) {
@@ -189,7 +229,11 @@ describe('/api', function() {
                 .get(url)
                 .set('Authorization', fooToken)
                 .expect('Content-Type', /json/)
-                .expect(200, expected, done);
+                .expect(200, {
+                    total: expected.length,
+                    logs: expected,
+                    limit: 2
+                }, done);
         });
 
         it('respect tenant', function(done) {
@@ -199,7 +243,11 @@ describe('/api', function() {
                 .get(url)
                 .set('Authorization', barToken)
                 .expect('Content-Type', /json/)
-                .expect(200, [], done);
+                .expect(200, {
+                    total: 0,
+                    logs: [],
+                    limit: 10
+                }, done);
         });
     });
 

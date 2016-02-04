@@ -115,13 +115,19 @@ const build = function() {
             }];
         }
 
-        if (isFinite(query.page) || isFinite(query.per_page)) {
-            let size = query.per_page || 10;
-            result.size = size;
-            if (isFinite(query.page)) {
-                result.from = query.page * size;
-            }
-        }
+        setupPagination(query);
+    };
+
+    const setupPagination = function(query) {
+        let size = (query && query.per_page) || 10;
+        let from = (query && query.page) || 0;
+
+        result.size = size;
+        result.from = size * from;
+    };
+
+    const size = function() {
+        return result.size;
     };
 
     const toEsQuery = function() {
@@ -133,6 +139,7 @@ const build = function() {
         addTenant,
         addUrlQuery,
         addUser,
+        size,
         toEsQuery
     });
 };

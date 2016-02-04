@@ -156,7 +156,9 @@ describe('criteria', function() {
                     date: {
                         order: 'asc'
                     }
-                }]
+                }],
+            from: 0,
+            size: 10
         }, criteria.toEsQuery());
     });
 });
