@@ -1,8 +1,12 @@
 'use strict';
 
 const express = require('express');
-const app = express();
 const jwt = require('express-jwt');
+
+const appContext = require('./app-context');
+const logsCtrl = appContext.logsCtrl;
+const app = express();
+const buildCriteria = require('./logs/build-criteria');
 
 const secretCallback = (function() {
     const secrets = {
@@ -23,17 +27,24 @@ const secretCallback = (function() {
     };
 }());
 
+const logsRouter = (function() {
+    const router = express.Router();
+    router.use(buildCriteria);
+    router.get('/api/logs/:id', logsCtrl.byId);
+    router.get('/api/logs', logsCtrl.byCriteria);
+    router.get('/api/users/:userId/logs', logsCtrl.byUser);
+    return router;
+}());
+
 app.use(jwt({
     secret: secretCallback
 }));
 
-app.use('/api/logs', require('./logs/setup'));
-app.use('/api/users', require('./users/setup'));
-
+app.use(logsRouter);
 app.use(require('./commons/error-handler'));
-
-module.exports = app;
 
 if (require.main === module) {
     app.listen(5000);
 }
+
+module.exports = app;

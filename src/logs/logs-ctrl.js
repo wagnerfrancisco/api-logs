@@ -19,6 +19,7 @@ const logsCtrl = function(spec) {
         const criteria = req.criteria;
 
         criteria.addUser(req.params.userId);
+        criteria.addUrlQuery(req.query);
 
         logs.byCriteria(criteria)
             .then(function(result) {
