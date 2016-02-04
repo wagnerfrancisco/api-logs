@@ -25,4 +25,11 @@ describe('errorHandler', function() {
         errorHandler(err, null, res);
         assert(res.sendStatus.calledWith(500), '500 for other errors');
     });
+
+    it('should send 401 if UnauthorizedError', function() {
+        const err = new Error();
+        err.name = 'UnauthorizedError';
+        errorHandler(err, null, res);
+        assert(res.sendStatus.calledWith(401), '401 for Unauthorized');
+    });
 });
